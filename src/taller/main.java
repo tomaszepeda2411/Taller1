@@ -11,16 +11,17 @@ public class main {
 	public static void main(String[] args) {
 		int opcion = 0;
 		Scanner scan = new Scanner(System.in);
+		
 		do {
 		System.out.println("==== Sistema de Control del Grupo POO ====");
 		System.out.println("1) Cargar archivos  (Alumnos y solicitudes)");
-		System.out.println("2) Procesar solicitudes (Filtrado automatico");
+		System.out.println("2) Procesar solicitudes (Filtrado automatico)");
 		System.out.println("3) Inscripcion manual al grupo");
 		System.out.println("4) Administracion del curso");
 		System.out.println("5) Generar reportes");
 		System.out.println("6) Analisis estadistico");
 		System.out.println("7) Salir");
-		opcion = scan.nextInt();
+		opcion = evitaCaidas(scan);
 		switch(opcion) {
 		case 1:
 			leerSolicitudes();
@@ -77,6 +78,17 @@ public class main {
 			System.out.println("No se ha podido encontrar el archivo");
 		}
 		
+	}
+	
+	private static int evitaCaidas(Scanner scan) {
+		while(true) {
+			try {
+				String entrada = scan.nextLine();
+				return Integer.parseInt(entrada);
+		} catch(NumberFormatException e) {
+			System.out.println("Entrada no valida, por favor ingrese un numero entero:");
+		}
+		}
 	}
 
 }
