@@ -10,9 +10,11 @@ public class main {
 	
 	public static void main(String[] args) {
 		int opcion = 0;
-		int n = 0;
+		int s = 0;
+		int alum = 0;
 		String[] rechazados = new String[100];
 		String[] admitidos = new String[100];
+		String[] admitidosPrint = new String[100];
 		String[] solicitudes = new String[100];
 		String[] alumnos = new String[100];
 		Scanner scan = new Scanner(System.in);
@@ -30,17 +32,80 @@ public class main {
 		switch(opcion) {
 		case 1:
 			System.out.println("Archivos Cargados");
-			leerSolicitudes(solicitudes);
-			leerAlumnos(alumnos);
-
-
-			
+			 s =leerSolicitudes(solicitudes,s);
+			 alum =leerAlumnos(alumnos,alum);
+			break;
 			
 		case 2:
+			System.out.println("Gestionando Solicitudes...");
+			int a = 0;
+			int r = 0;
+			
+			
+			for(int i=0;i<s;i++) {
+				String solicitante = solicitudes[i];
+				boolean encontrado = false;
+				boolean duplicado = false;
+				String paralelo = "";
+			
+				for (int k = 0;k < a;k++) {
+					
+					if (admitidos[k].equalsIgnoreCase(solicitante)) {
+						duplicado = true;
+						break;
+						
+					}
+				}
+				if (!duplicado) {
+					for (int k =0;k<r;k++) {
+						if(rechazados[k].equalsIgnoreCase(solicitante)) {
+						duplicado = true;
+						break;
+					}
+				}
+			}
+				if(duplicado) {
+					continue;
+				}
+				for(int j = 0; j<alum;j++) {
+					String[] partes = alumnos[j].split(";");
+					String inscrito = partes[0];
+					if(solicitante.equalsIgnoreCase(inscrito)) {
+						encontrado = true;
+						paralelo = partes[1];
+						break;
+					}
+				}
+				
+				if (encontrado) {
+					admitidos[a] = solicitante;
+					admitidosPrint[a] = admitidos[a] + " | Paralelo " + paralelo;
+			
+					a++;
+				}else {
+					rechazados[r] = solicitante ;
+					r++;
+					
+				}
+			}
+		
+			System.out.println("==== ADMITIDOS: "+ a +  "====");
+			for(int i=0;i<a;i++) {
+				System.out.println(admitidosPrint[i]);
+			}
+			System.out.println("==== Rechazados: "+ r+ "====");
+			for(int i=0;i<r;i++) {
+				System.out.println(rechazados[i]+ " | No figura en ningun paralelo");
+			}
+				break;
 		case 3:
+			break;
 		case 4:
+			break;
 		case 5:
+			break;
 		case 6:
+			break;
 			
 		case 7:
 			break;
@@ -53,7 +118,7 @@ public class main {
 		
 	}
 
-	private static void leerAlumnos(String[] alumnos) {
+	private static int leerAlumnos(String[] alumnos,int alum) {
 	File txtAlumnos = new File("Alumnos.txt");
 	
 	try {
@@ -66,37 +131,44 @@ public class main {
 			String apellidoA = partes[1];
 			String rut = partes[2];
 			String paralelo = partes[3];
-			alumnos[n] = nombreA + apellidoA;
+			alumnos[n] = nombreA + " "+ apellidoA + ";" + paralelo;
 			n++;
 			
 			
 		}
 		System.out.println("-"+ n + " Alumnos inscritos");
 		scan.close();
+		return n;
+		
 	} catch (FileNotFoundException e) {
 		System.out.println("Archivo Alumnos no encontrado");
 	}
+	return 0;
 	}
 
-	private static void leerSolicitudes(String[] solicitudes) {
+	private static int leerSolicitudes(String[] solicitudes,int a) {
 		File txtSolicitudes = new File("Solicitudes.txt");
 	
 		try {
-			int n = 0;
+			a = 0;
 			Scanner scan = new Scanner(txtSolicitudes);
 			while(scan.hasNextLine()) {
 				String linea = scan.nextLine();
 				String[] partes = linea.split("-");
 				String nombreS = partes[0];
 				String apellidoS = partes[1];
-				solicitudes[n] = nombreS + apellidoS;
-				n++;
+				solicitudes[a] = nombreS +" "+ apellidoS ;
+				a++;
 			}
-			System.out.println("-"+ n + " solicitudes recibidas");
+			System.out.println("-"+ a + " solicitudes recibidas");
 			scan.close();
+			return a;
+			
 		} catch (FileNotFoundException e) {
 			System.out.println("No se ha podido encontrar el archivo");
 		}
+		return 0;
+		
 		
 	}
 	
@@ -106,6 +178,7 @@ public class main {
 				String entrada = scan.nextLine();
 				return Integer.parseInt(entrada);
 		} catch(NumberFormatException e) {
+			System.out.println("Ingrese un numero de las opciones por favor");
 			
 		}
 		}
