@@ -12,6 +12,8 @@ public class main {
 		int opcion = 0;
 		int s = 0;
 		int alum = 0;
+		int a = 0;
+		int r = 0;
 		String[] rechazados = new String[100];
 		String[] admitidos = new String[100];
 		String[] admitidosPrint = new String[100];
@@ -39,8 +41,8 @@ public class main {
 			
 		case 2:
 			System.out.println("Gestionando Solicitudes...");
-			int a = 0;
-			int r = 0;
+			
+			
 			
 			
 			for(int i=0;i<s;i++) {
@@ -51,7 +53,7 @@ public class main {
 				String rut = "";
 			
 				for (int k = 0;k < a;k++) {
-					String[] partesA = admitidos[k].split(";");
+					String[] partesA = admitidos[k].split("-");
 					String nombre = partesA[0];
 					if (nombre.equalsIgnoreCase(solicitante)) {
 						duplicado = true;
@@ -101,29 +103,142 @@ public class main {
 			System.out.println("==== Rechazados: "+ r+ "====");
 			for(int i=0;i<r;i++) {
 				System.out.println(rechazados[i]+ " | No figura en ningun paralelo");
+				
 			}
 				break;
 		case 3:
+			String nombre = "";
 			int aux = 0;
 			do {
+				
 			System.out.println("¿Como deseas agregar a la persona?");
 			System.out.println("1) Por nombre completo");
 			System.out.println("2) Por RUT");
+			
 			aux = evitaCaidas(scan);
+			
 			switch(aux) {
+			
 			case 1:
-				System.out.println("Ingrese nombre completo:");
+				System.out.println("Ingrese nombre completo(Nombre Apellido):");
+				nombre = scan.nextLine();
+				boolean NombreDuplicado = false;
+				for(int k=0;k< a;k++) {
+					String[] partes = admitidos[k].split("-");
+					String nombreD = partes[0];
+					if(nombreD.equalsIgnoreCase(nombre)) {
+						NombreDuplicado=true;
+						break;
+					}
+				}
+				if(!NombreDuplicado) {
+					for(int k =0;k<r;k++) {
+						if(rechazados[k].equalsIgnoreCase(nombre)) {
+							NombreDuplicado=true;
+							break;
+						}
+					}
+				}
+				if(NombreDuplicado) {
+					System.out.println("El alumno ya esta en el grupo");
+					break;
+				}
+				boolean encontrado = false;
+				String alumno = "";
+				String rut = "";
+				String paralelo = "";
+				
+				for(int i=0;i<alumnos.length;i++) {
+					
+					String linea = alumnos[i];
+					if (linea == null) {
+						continue;
+					}
+					String[] partes = linea.split(";");
+					String nombreA = partes[0];
+					
+					
+					if(nombreA.equalsIgnoreCase(nombre)) {
+						encontrado = true;
+						rut = partes[1];
+						paralelo = partes[2];
+						break;
+					}
+					
+				}
+				if(encontrado) {
+					System.out.println("Nombre encontado en el paralelo "+ paralelo);
+					admitidos[a] = nombre + "-" + rut;
+					admitidosPrint[a] = admitidos[a] + " |  Paralelo " + paralelo;
+					a++;
+				}else {
+					System.out.println("Nombre no figura en los paralelos");
+					rechazados[r] = nombre;
+					r++;
+				}
+				
 				break;
+				
 			case 2:
-				System.out.println("Ingrese Rut");
+				System.out.println("Ingrese Rut: ");
+				 rut = scan.nextLine();
+				
+				 boolean RutDuplicado = false;
+				 for (int k = 0; k<a;k++) {
+					 String[] partes = admitidos[k].split("-");
+					 String rutA = partes[1];
+					 if(rutA.equalsIgnoreCase(rut)) {
+						 RutDuplicado = true;
+						 break;
+					 }
+				 }
+				 if(RutDuplicado) {
+					 System.out.println("El rut ya se encuentra en los admitidos");
+					 break;
+				 }
+				 boolean Rencontrado = false;
+				 String nombreR = "";
+				 String paraleloR="";
+				 
+				for(int i = 0;i<alum;i++) {
+					String linea = alumnos[i];
+					if(linea==null) {
+						continue;
+					}
+					
+					String[] partes = linea.split(";");
+					String rutA = partes[1];
+					
+			
+					
+					if(rutA.equalsIgnoreCase(rut)) {
+					Rencontrado = true;
+					nombreR = partes[0];
+					paraleloR = partes[2];
+					break;
+				
+					}
+					
+				}
+				if(Rencontrado) {
+					System.out.println("RUT encontrado en el paralelo:" + paraleloR);
+					admitidos[a] = nombreR + "-" + rut;
+					admitidosPrint[a] = admitidos[a] + " | Paralelo " + paraleloR;
+					a++;
+				}else {
+					System.out.println("RUT no encontrado");
+					System.out.println("Al no tener el nombre, se ingresara el rut a la lista de rechazados");
+				    rechazados[r] = rut;
+				    r++;
+				}
+				
 				break;
 			default:
 				System.out.println("Ingrese una opcion Valida!!!");
 			}
 			}while (aux != 1 && aux !=2);
-				
 			
-			
+
 			break;
 		case 4:
 			break;
