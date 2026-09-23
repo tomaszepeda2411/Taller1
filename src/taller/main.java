@@ -28,6 +28,7 @@ public class main {
 		System.out.println("5) Generar reportes");
 		System.out.println("6) Análisis estadístico");
 		System.out.println("7) Salir");
+		
 		opcion = evitaCaidas(scan);
 		switch(opcion) {
 		case 1:
@@ -47,10 +48,12 @@ public class main {
 				boolean encontrado = false;
 				boolean duplicado = false;
 				String paralelo = "";
+				String rut = "";
 			
 				for (int k = 0;k < a;k++) {
-					
-					if (admitidos[k].equalsIgnoreCase(solicitante)) {
+					String[] partesA = admitidos[k].split(";");
+					String nombre = partesA[0];
+					if (nombre.equalsIgnoreCase(solicitante)) {
 						duplicado = true;
 						break;
 						
@@ -70,15 +73,17 @@ public class main {
 				for(int j = 0; j<alum;j++) {
 					String[] partes = alumnos[j].split(";");
 					String inscrito = partes[0];
+					
 					if(solicitante.equalsIgnoreCase(inscrito)) {
 						encontrado = true;
-						paralelo = partes[1];
+						rut = partes[1];
+						paralelo = partes[2];
 						break;
 					}
 				}
 				
 				if (encontrado) {
-					admitidos[a] = solicitante;
+					admitidos[a] = solicitante + "-" + rut;
 					admitidosPrint[a] = admitidos[a] + " | Paralelo " + paralelo;
 			
 					a++;
@@ -99,6 +104,26 @@ public class main {
 			}
 				break;
 		case 3:
+			int aux = 0;
+			do {
+			System.out.println("¿Como deseas agregar a la persona?");
+			System.out.println("1) Por nombre completo");
+			System.out.println("2) Por RUT");
+			aux = evitaCaidas(scan);
+			switch(aux) {
+			case 1:
+				System.out.println("Ingrese nombre completo:");
+				break;
+			case 2:
+				System.out.println("Ingrese Rut");
+				break;
+			default:
+				System.out.println("Ingrese una opcion Valida!!!");
+			}
+			}while (aux != 1 && aux !=2);
+				
+			
+			
 			break;
 		case 4:
 			break;
@@ -131,7 +156,7 @@ public class main {
 			String apellidoA = partes[1];
 			String rut = partes[2];
 			String paralelo = partes[3];
-			alumnos[n] = nombreA + " "+ apellidoA + ";" + paralelo;
+			alumnos[n] = nombreA + " "+ apellidoA + ";" + rut + ";" + paralelo;
 			n++;
 			
 			
