@@ -2,8 +2,11 @@
 
 package taller;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class main {
@@ -32,6 +35,7 @@ public class main {
 		System.out.println("7) Salir");
 		
 		opcion = evitaCaidas(scan);
+		try {
 		switch(opcion) {
 		case 1:
 			System.out.println("Archivos Cargados");
@@ -41,9 +45,6 @@ public class main {
 			
 		case 2:
 			System.out.println("Gestionando Solicitudes...");
-			
-			
-			
 			
 			for(int i=0;i<s;i++) {
 				String solicitante = solicitudes[i];
@@ -63,6 +64,10 @@ public class main {
 				}
 				if (!duplicado) {
 					for (int k =0;k<r;k++) {
+						if(r >= rechazados.length) {
+							System.out.println("La lista de rechazados esta llena");
+							break;
+						}
 						if(rechazados[k].equalsIgnoreCase(solicitante)) {
 						duplicado = true;
 						break;
@@ -173,6 +178,10 @@ public class main {
 					a++;
 				}else {
 					System.out.println("Nombre no figura en los paralelos");
+					if(r >= rechazados.length) {
+						System.out.println("La lista de rechazados esta llena");
+						break;
+					}
 					rechazados[r] = nombre;
 					r++;
 				}
@@ -228,6 +237,10 @@ public class main {
 				}else {
 					System.out.println("RUT no encontrado");
 					System.out.println("Al no tener el nombre, se ingresara el rut a la lista de rechazados");
+					if(r >= rechazados.length) {
+						System.out.println("La lista de rechazados esta llena");
+						break;
+					}
 				    rechazados[r] = rut;
 				    r++;
 				}
@@ -241,6 +254,71 @@ public class main {
 
 			break;
 		case 4:
+			int op;
+			do{
+				System.out.println("==== ADMINISTRACION DEL CURSO ====");
+				System.out.println("1- Cambiar paralelo de un alumno");
+				System.out.println("2- Eliminar alumno del curso");
+				System.out.println("3- Inscribir un alumno nuevo");
+				System.out.println("4- Volver");
+				System.out.println("Ingrese una opcion:");
+				op = evitaCaidas(scan);
+				switch(op) {
+				case 1:
+					System.out.print("Ingrese rut del alumno: ");
+					String rut = scan.nextLine().trim();
+					boolean rutActual = false;
+					
+					for (int i = 0; i<alumnos.length;i++) {
+						String linea = alumnos[i];
+						if(linea==null) {
+							continue;
+						}
+						String[] partes = linea.split(";");
+						
+						if(partes.length>=3) {
+						String nombreParalelo = partes[0].trim();
+						String rutParalelo = partes[1].trim();
+						String paralelo = partes[2].trim();
+						
+						if(rut.equalsIgnoreCase(rutParalelo)) {
+							rutActual = true;
+							System.out.println("Alumno: "+ nombreParalelo + "(Actualmente en "+ paralelo + ")");
+							System.out.println("Nuevo paralelo (C1/C2): ");
+							String paralel = scan.nextLine().trim().toUpperCase();
+							
+							while(!paralel.equalsIgnoreCase("C1") && !paralel.equalsIgnoreCase("C2")) {
+								System.out.println("Opcion Invalida, Intentelo De nuevo: ");
+								paralel = scan.nextLine().trim().toUpperCase();
+						}
+						alumnos[i] = nombreParalelo + ";" + rutParalelo +";" + paralel;
+						
+						for(int k =0; k<a;k++) {
+							if(admitidos[k] !=null && admitidos[k].contains(rutParalelo)) {
+								admitidosPrint[k] = admitidos[k] + " | Paralelo "+ paralel;
+							}
+						}
+						guardarAlumnos(alumnos,alum);
+						System.out.println("Paralelo nuevo guardado.");
+						break;
+						}
+					}
+				}
+					if(!rutActual) {
+						System.out.println("El RUT no es encontro entre los alumnos");
+					}
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				default:
+					System.out.println("Ingrese una opcion valida");
+				
+			}
+			}while(op!=4);
 			break;
 		case 5:
 			break;
@@ -252,6 +330,9 @@ public class main {
 		default:
 			System.out.println("Ingrese una opcion Valida!!!");
 			
+		}
+		} catch (Exception e) {
+			System.out.println("Ocurrio un error inesperado" + e + "Volviendo al menu princiapl....");
 		}
 		}while(opcion!=7);
 		
@@ -265,12 +346,23 @@ public class main {
 		Scanner scan = new Scanner(txtAlumnos);
 		int n = 0;
 		while(scan.hasNextLine()) {
-			String linea = scan.nextLine();
+			String linea = scan.nextLine().trim();
+			if(linea.isEmpty()) {
+				continue;
+			}
+			
 			String[] partes = linea.split(";");
-			String nombreA = partes[0];
-			String apellidoA = partes[1];
-			String rut = partes[2];
-			String paralelo = partes[3];
+			if(partes.length <4) {
+				continue;
+			}
+			if (n>= alumnos.length) {
+				System.out.println("Has llegado al limite de alumnos por inscribir");
+				break;
+			}
+			String nombreA = partes[0].trim();
+			String apellidoA = partes[1].trim();
+			String rut = partes[2].trim();
+			String paralelo = partes[3].trim();
 			alumnos[n] = nombreA + " "+ apellidoA + ";" + rut + ";" + paralelo;
 			n++;
 			
@@ -293,10 +385,20 @@ public class main {
 			a = 0;
 			Scanner scan = new Scanner(txtSolicitudes);
 			while(scan.hasNextLine()) {
-				String linea = scan.nextLine();
+				String linea = scan.nextLine().trim();
+				if(linea.isEmpty()) {
+					continue;
+				}
 				String[] partes = linea.split("-");
-				String nombreS = partes[0];
-				String apellidoS = partes[1];
+				if(partes.length <2) {
+					continue;
+				}
+				if(a>=solicitudes.length) {
+					System.out.println("Has llegado al limite de solicitudes");
+					break;
+				}
+				String nombreS = partes[0].trim();
+				String apellidoS = partes[1].trim();
 				solicitudes[a] = nombreS +" "+ apellidoS ;
 				a++;
 			}
@@ -321,6 +423,35 @@ public class main {
 			System.out.println("Ingrese un numero de las opciones por favor");
 			
 		}
+		}
+	}
+	
+	public static void guardarAlumnos(String[] alumnos,int cantidad) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("Alumnos.txt"))){
+			for (int i = 0; i<cantidad;i++) {
+				if(alumnos[i] !=null && !alumnos[i].trim().isEmpty()) {
+					String[] partes = alumnos[i].split(";");
+					String[] nom = partes[0].split(" ");
+					
+					String nombre= "";
+					if(nom.length>0) {
+						nombre = nom[0];
+					}
+					String apellido ="";
+					for(int j =1;j<nom.length;j++) {
+						if(j>1) {
+							apellido = apellido + " ";
+						}
+						apellido = apellido + nom[j];
+					}
+					bw.write(alumnos[i]);
+					bw.newLine();
+				}
+			}
+			System.out.println("Cambios guardados correctamente");
+		} catch (IOException e) {
+			System.out.println("Error al escribir en el archivo");
+			
 		}
 	}
 
