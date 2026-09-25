@@ -552,5 +552,15 @@ public class main {
 			
 		}
 	}
+	
+	private static int siguienteVersion(String rutaBase) {
+		int version = 1;
+		File archivo = new File(rutaBase + version + ".txt");
+		while(archivo.exists()) {
+			version++;
+			archivo = new File(rutaBase + version +".txt");
+		}
+		return version;
+	}
 
 }
