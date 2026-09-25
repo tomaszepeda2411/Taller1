@@ -309,9 +309,107 @@ public class main {
 					}
 					break;
 				case 2:
+					System.out.println("Ingrese el nombre del alumno a Eliminar(Nombre Apellido): ");
+					String alumnoEliminar = scan.nextLine().trim();
+					boolean Eliminar = false;
+					boolean EliminarGrupo = false;
+					int pos = -1;
+					int pos2=-1;
+					
+					for(int i = 0;i<alum;i++) {
+						
+						if(alumnos[i] != null){
+							String[] partes = alumnos[i].split(";");
+							String nombreCompleto = partes[0];
+							if(nombreCompleto.equalsIgnoreCase(alumnoEliminar)) {
+							Eliminar = true;
+							pos = i;
+							
+							break;
+							}
+							
+						}
+					}
+					for( int j=0;j<a;j++) {
+						String[] partes = admitidos[j].split("-");
+						String nombreE = partes[0];
+						if(nombreE.equalsIgnoreCase(alumnoEliminar)) {
+							EliminarGrupo = true;
+							pos2=j;
+							break;
+						}
+						
+						
+					}
+					if(Eliminar) {
+						for(int i=pos;i<alum-1;i++) {
+							alumnos[i] = alumnos[i+1];
+						}
+						alumnos[alum-1] = null;
+						alum--;
+						guardarAlumnos(alumnos,alum);
+						System.out.println("Alumno eliminado y guardado.");
+					}else {
+						System.out.println("El alumno no se ha encontrado");
+					}
+					if(EliminarGrupo) {
+						for(int j=pos2;j<a-1;j++) {
+							admitidos[j] = admitidos[j+1];
+							admitidosPrint[j] = admitidosPrint[j+1];
+						}
+						admitidos[a-1] = null;
+						admitidosPrint[a-1] = null;
+						a--;
+						System.out.println("Alumno eliminado del grupo");
+					}else {
+						System.out.println("No se ha encontrado al alumno en el grupo");
+					}
 					break;
 				case 3:
-					break;
+					System.out.println("Ingresa el alumno que quieres inscribir al curso(Respete formato (Nombre;Apellido;RUT;Paralelo): ");
+					String alumnoNuevo = scan.nextLine().trim();
+					String[] partes = alumnoNuevo.split(";");
+					if(partes.length <4) {
+						System.out.println("Formato invalidado,deben ser 4 datos separados por ';'");
+						break;
+					}
+					String nombreN = partes[0].trim();
+					String apellidoN = partes[1].trim();
+					String rutN = partes[2].trim();
+					String paraleloN = partes[3].toUpperCase();
+					
+					if(!paraleloN.equals("C1") && !paraleloN.equals("C2")) {
+						System.out.println("El paralelo solo puede ser C1 o C2");
+						break;
+					}
+					
+					boolean rutUnico = true;
+					for(int i = 0;i<alum;i++) {
+						if(alumnos[i] != null){
+							String[] partes2 = alumnos[i].split(";");
+							String rutViejo = partes2[1];
+							if(rutN.equalsIgnoreCase(rutViejo)) {
+								rutUnico = false;
+								break;
+							
+							}
+								
+							}
+						}
+					
+					if(!rutUnico) {
+						System.out.println("Rut ya encontrado en la lista de alumnos");
+					}else {
+						if(alum>=alumnos.length) {
+							System.out.println("Se ha llegado al limite de alumnos inscritos");
+						}else {
+							alumnos[alum] = nombreN + " " + apellidoN + ";" + rutN + ";" + paraleloN;
+							alum++;
+							guardarAlumnos(alumnos,alum);
+							System.out.println("Alumno inscrito");
+						}
+					}
+ 					break;
 				case 4:
 					break;
 				default:
@@ -444,7 +542,7 @@ public class main {
 						}
 						apellido = apellido + nom[j];
 					}
-					bw.write(alumnos[i]);
+					bw.write(nombre + ";" + apellido + ";" + partes[1] + ";" + partes[2] );
 					bw.newLine();
 				}
 			}
