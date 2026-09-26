@@ -38,7 +38,7 @@ Submenú con:
   
       Rechazados-VX.txt — solicitudes rechazadas.
 
-Cada vez que se pide un reporte, se crea una versión nueva (X se incrementa automáticamente).
+Cada vez que se pide un reporte, se crea una versión nueva (X se incrementa automáticamente) y se añade a la carpeta Reportes.
 
 - **6) Analisis estadistico:**
   Muestra el total de solicitudes recibidas, el porcentaje de rechazados, la tasa de admisión y la cantidad de personas que intentaron ingresar más de una vez.
