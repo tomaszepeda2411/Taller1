@@ -50,7 +50,7 @@ Cada vez que se pide un reporte, se crea una versión nueva (X se incrementa aut
 - **Nombre**: Tomás Zepeda | **RUT**: 21.789.061-6 | **Usuario de github**: tomaszepeda2411
 
 ## Estructura del proyecto
-
+    |── Reportes             #Carpeta vacia que almacena los reportes sin sobreescribir los anteriores
     ├── src/
     │   └── Main.java        # Clase principal con menús y lógica
     ├── Alumnos.txt          # Archivo de alumnos (nombre;apellido;RUT;Paralelo)
