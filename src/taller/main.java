@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class main {
-	
+	// punto de entrada del programa,Muestra el Menu principal
 	public static void main(String[] args) {
 		int opcion = 0;
 		int s = 0;
@@ -44,6 +44,10 @@ public class main {
 			break;
 			
 		case 2:
+			if(s==0 || alum==0) {
+				System.out.println("Aun no has cargados los archivos. Por favor eliga la opcion 1");
+				break;
+			}
 			System.out.println("Gestionando Solicitudes...");
 			
 			for(int i=0;i<s;i++) {
@@ -112,6 +116,10 @@ public class main {
 			}
 				break;
 		case 3:
+			if(alum == 0) {
+				System.out.println("Por favor cargue los archivos primero (Opcion 1)");
+				break;
+			}
 			String nombre = "";
 			int aux = 0;
 			do {
@@ -254,6 +262,10 @@ public class main {
 
 			break;
 		case 4:
+			if(alum == 0) {
+				System.out.println("Por favor cargue los archivos primero (Opcion 1)");
+				break;
+			}
 			int op;
 			do{
 				System.out.println("==== ADMINISTRACION DEL CURSO ====");
@@ -474,7 +486,7 @@ public class main {
 	}
 
 
-
+	//  Lee el archivo alumnos.txt devuelve la cantidad de alumnos cargada correctamente
 	private static int leerAlumnos(String[] alumnos,int alum) {
 	File txtAlumnos = new File("Alumnos.txt");
 	
@@ -514,6 +526,7 @@ public class main {
 	return 0;
 	}
 
+	// lee solicitudes.txt y devuelve la cantidad de solicitudes que se cargaron correctamente
 	private static int leerSolicitudes(String[] solicitudes,int a) {
 		File txtSolicitudes = new File("Solicitudes.txt");
 	
@@ -549,7 +562,7 @@ public class main {
 		
 		
 	}
-	
+	// Evita la caida del codigo por un ingreso de un string en el menu principal, mientras no se ingrese un numero se repite
 	private static int evitaCaidas(Scanner scan) {
 		while(true) {
 			try {
@@ -562,6 +575,7 @@ public class main {
 		}
 	}
 	
+	// reescribe el archivo alumnos.txt para que los cambios como cambio de paralelo, eliminacion o nueva inscripcion se guarden en la memoria
 	public static void guardarAlumnos(String[] alumnos,int cantidad) {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter("Alumnos.txt"))){
 			for (int i = 0; i<cantidad;i++) {
@@ -590,7 +604,7 @@ public class main {
 			
 		}
 	}
-	
+	// busca la version del archivo para no sobreescribir los ya existentes
 	private static int siguienteVersion(String rutaBase) {
 		int version = 1;
 		File archivo = new File(rutaBase + version + ".txt");
@@ -600,6 +614,7 @@ public class main {
 		}
 		return version;
 	}
+	//funcion que genera el reporte pedido del paralelo solicitado
 	private static void generarReporteParalelo(String paraleloBuscado, String[] admitidos, int a,String[] alumnos,int alum) throws IOException {
 		int version = siguienteVersion("Reportes/Reporte"+ paraleloBuscado +"-V");
 		String nombreArchivo = "Reportes/Reporte" + paraleloBuscado + "-V" + version + ".txt";
@@ -635,6 +650,8 @@ public class main {
 			System.out.println("Error al generar reporte de "+ paraleloBuscado);
 				}
 				}
+	
+	// genera el reporte de los rechazados
 	private static void generarReportesRechazados(String[] rechazados, int r) throws IOException {
 		int version = siguienteVersion("Reportes/Rechazados-V");
 		String nombreArchivo = "Reportes/Rechazados-V" + version + ".txt";
@@ -659,7 +676,7 @@ public class main {
 			System.out.println("Error al generar reporte de rechazados");
 		}
 	}
-	
+	// cuenta la cantidad de personas que solicitaron más de una vez su ingreso al grupo
 	private static int contarSolicitudesDuplicadas(String[] solicitudes,int s) {
 		int duplicadas = 0;
 		
