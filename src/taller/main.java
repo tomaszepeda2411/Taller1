@@ -447,7 +447,16 @@ public class main {
 			}while(opReporte !=4);
 			break;
 		case 6:
-			
+			if(s==0) {
+				System.out.println("No hay archivos cargados, oprima la opcion 1 primero");
+			}else {
+			int duplicadas = contarSolicitudesDuplicadas(solicitudes,s);
+			System.out.println("--- Analisis estadistico ---");
+			System.out.println("Total de intento de ingresos: "+ s);
+			System.out.println("Rechazados: " + r +"(" + (r*100)/s + "%)");
+			System.out.println("Tasa de admision: " + a*100/s +"%");
+			System.out.println("Cantidad de persona que intentaron entrar mas de una vez: " + duplicadas);
+			}
 			break;
 			
 		case 7:
@@ -649,5 +658,33 @@ public class main {
 		} catch (IOException e) {
 			System.out.println("Error al generar reporte de rechazados");
 		}
+	}
+	
+	private static int contarSolicitudesDuplicadas(String[] solicitudes,int s) {
+		int duplicadas = 0;
+		
+		for (int i =0; i<s; i++) {
+			boolean primeraVez = true;
+			
+			for(int j=0; j<i;j++) {
+				if(solicitudes[i].equalsIgnoreCase(solicitudes[j])) {
+					primeraVez = false;
+					break;
+				}
+			}
+			if(primeraVez) {
+				boolean seRepite = false;
+				for(int k = i+1;k<s;k++) {
+					if(solicitudes[i].equalsIgnoreCase(solicitudes[k])) {
+						seRepite = true;	
+						break;
+					}
+				}
+				if(seRepite) {
+					duplicadas++;
+				}
+			}
+		}
+		return duplicadas;
 	}
 }
