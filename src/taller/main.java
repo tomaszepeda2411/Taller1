@@ -419,8 +419,35 @@ public class main {
 			}while(op!=4);
 			break;
 		case 5:
+			int opReporte;
+			do {
+				System.out.println("=== GENERAR INFORMES ===");
+				System.out.println("1- Reporte paralelo C1");
+				System.out.println("2- Reporte paralelo C2");
+				System.out.println("3- Reporte rechazados");
+				System.out.println("4- Volver");
+				System.out.println("Ingrese una opcion:");
+				opReporte = evitaCaidas(scan);
+				
+				switch(opReporte) {
+				case 1:
+					generarReporteParalelo("C1",admitidos,a,alumnos,alum);
+					break;
+				case 2:
+					generarReporteParalelo("C2",admitidos,a,alumnos,alum);
+					break;
+				case 3:
+					generarReportesRechazados(rechazados,r);
+					break;
+				case 4:
+					break;
+				default:
+					System.out.println("Ingrese una opcion valida!!!");
+				}
+			}while(opReporte !=4);
 			break;
 		case 6:
+			
 			break;
 			
 		case 7:
@@ -436,6 +463,8 @@ public class main {
 		
 		
 	}
+
+
 
 	private static int leerAlumnos(String[] alumnos,int alum) {
 	File txtAlumnos = new File("Alumnos.txt");
@@ -562,5 +591,63 @@ public class main {
 		}
 		return version;
 	}
-
+	private static void generarReporteParalelo(String paraleloBuscado, String[] admitidos, int a,String[] alumnos,int alum) throws IOException {
+		int version = siguienteVersion("Reportes/Reporte"+ paraleloBuscado +"-V");
+		String nombreArchivo = "Reportes/Reporte" + paraleloBuscado + "-V" + version + ".txt";
+		
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))){
+			bw.write("=== Miembros del grupo - Paralelo " + paraleloBuscado + " ===");
+			bw.newLine();
+			
+			for(int i =0;i<a;i++) {
+				if(admitidos[i] != null) {
+					String[] partesAdmitidos = admitidos[i].split("-");
+					String nombreAdmitido = partesAdmitidos[0];
+					String rutAdmitido = partesAdmitidos[1] + "-" + partesAdmitidos[2];
+					
+					for(int j = 0; j<alum;j++) {
+						if(alumnos[j] != null) {
+							String[] partesAlumnos = alumnos[j].split(";");
+							String rutAlumno = partesAlumnos[1];
+							
+							if(rutAlumno.equalsIgnoreCase(rutAdmitido)) {
+								String paraleloActual = partesAlumnos[2];
+								if(paraleloActual.equalsIgnoreCase(paraleloBuscado)) {
+									bw.write(nombreAdmitido + " - " + rutAdmitido);
+									bw.newLine();
+								}
+								break;
+							}
+						}
+					}
+				}
+			}System.out.println("Reporte" + nombreArchivo + "generado");
+		}catch (IOException e) {
+			System.out.println("Error al generar reporte de "+ paraleloBuscado);
+				}
+				}
+	private static void generarReportesRechazados(String[] rechazados, int r) throws IOException {
+		int version = siguienteVersion("Reportes/Rechazados-V");
+		String nombreArchivo = "Reportes/Rechazados-V" + version + ".txt";
+		
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))){
+			bw.write("=== Solicitudes rechazadas ===");
+			bw.newLine();
+			
+			for(int i = 0; i<r; i++) {
+				if(rechazados[i] != null) {
+					if(rechazados[i].contains(" ")) {
+						bw.write(rechazados[i] + " - No pertenece a ningun paralelo");
+					}else {
+						bw.write("Sin nombre registrado, RUT: " + rechazados[i]);
+					}
+					bw.newLine();
+				}
+			}
+			System.out.println("Reporte " + nombreArchivo + " generado.");
+			
+		} catch (IOException e) {
+			System.out.println("Error al generar reporte de rechazados");
+		}
+	}
 }
